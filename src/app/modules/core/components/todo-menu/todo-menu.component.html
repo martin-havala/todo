@@ -1,0 +1,9 @@
+<button *ngIf="this.email$ | async" mat-mini-fab routerLink="/detail">
+  <mat-icon>add</mat-icon>
+</button>
+<div class="menu">
+  <app-todo-list
+    *ngFor="let list of list$ | async"
+    [list]="list"
+  ></app-todo-list>
+</div>

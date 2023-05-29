@@ -1,0 +1,16 @@
+<div class="todo__header">
+  <div class="todo__title">
+    {{ item.title }}
+  </div>
+  <div class="todo__deadline">
+    <span class="todo__deadline-date">{{
+      item.deadline | date : "shortDate"
+    }}</span>
+    <span class="todo__deadline-time">{{
+      item.deadline | date : "shortTime"
+    }}</span>
+  </div>
+  <div class="todo__resolved">
+    <mat-checkbox [formControl]="resolvedFC"></mat-checkbox>
+  </div>
+</div>

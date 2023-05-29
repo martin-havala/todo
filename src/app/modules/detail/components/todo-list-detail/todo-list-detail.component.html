@@ -1,0 +1,61 @@
+<form [formGroup]="formGroup">
+  <mat-card>
+    <mat-card-header color="primary">
+      <mat-card-title>
+        <mat-form-field>
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" class="mat-body-2" />
+        </mat-form-field>
+        <mat-checkbox matInput formControlName="private">Private</mat-checkbox>
+      </mat-card-title>
+      <mat-card-subtitle>
+        <ng-container *ngIf="list?.createdAt">
+          Created on <i>{{ list?.createdAt | date }}</i> by
+          <i>{{ list?.userEmail }}</i>
+        </ng-container>
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-actions>
+      <button
+        mat-stroked-button
+        (click)="save()"
+        [disabled]="!formGroup.dirty || !formGroup.valid"
+      >
+        <mat-icon>save</mat-icon>
+        Save list
+      </button>
+      <button mat-stroked-button (click)="deleteList()" [disabled]="!list?.id">
+        <mat-icon>delete</mat-icon>
+        Delete list
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</form>
+
+<mat-card>
+  <mat-card-content>
+    <div class="detail__todo" *ngFor="let item of items; trackBy: trackFn">
+      <app-todo [item]="item"> </app-todo>
+      <button
+        mat-icon-button
+        routerLink="/detail/{{ list?.id }}/todo/{{ item.id }}"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button (click)="deleteTodo(item)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button
+      class="detail_addBtn"
+      mat-mini-fab
+      routerLink="/detail/{{ list?.id }}/todo/"
+      color="primary"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  </mat-card-actions>
+</mat-card>

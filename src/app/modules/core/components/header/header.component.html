@@ -1,0 +1,23 @@
+<mat-toolbar>
+  <div class="title" routerLink="/">ToDo</div>
+  <div>
+    <span *ngIf="userInfo$ | async as profile">
+      {{ profile.given_name || profile.email || profile.email_verified }}
+    </span>
+
+    <button
+      mat-stroked-button
+      *ngIf="!(authenticated$ | async)"
+      (click)="login()"
+    >
+      Login
+    </button>
+    <button
+      mat-stroked-button
+      *ngIf="authenticated$ | async"
+      (click)="logout()"
+    >
+      Logout
+    </button>
+  </div>
+</mat-toolbar>

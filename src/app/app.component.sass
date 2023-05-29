@@ -1,0 +1,19 @@
+
+:host
+    display: grid
+    grid-template-areas: "header" "section"
+    grid-template-rows: auto 1fr 2em
+    min-height: 100vh
+
+header
+    grid-area: header
+
+section
+    grid-area: section
+    overflow: auto
+
+mat-progress-spinner
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)

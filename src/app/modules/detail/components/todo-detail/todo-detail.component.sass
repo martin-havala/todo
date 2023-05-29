@@ -1,0 +1,19 @@
+.mat-mdc-card-header
+    display: grid
+    grid-template-areas: 'title deadline deadline_time resolved'
+    grid-gap: 0
+    grid-template-columns: 5fr 15em 12em 1fr
+    width: 100%
+
+.deadline
+    grid-area: deadline
+    display: flex
+.deadline_time
+    grid-area: deadline_time
+.title
+    grid-area: title
+
+.resolved
+    grid-area: resolved
+.description
+    width: 100%

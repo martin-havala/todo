@@ -1,0 +1,17 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      {{ list.name }}
+    </mat-card-title>
+    <button mat-icon-button routerLink="/detail/{{ list.id }}">
+      <mat-icon>edit_note</mat-icon>
+    </button>
+
+    <mat-card-subtitle>
+      <i *ngIf="list.private">private</i>
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <app-todo *ngFor="let item of list.todos" [item]="item"></app-todo>
+  </mat-card-content>
+</mat-card>
