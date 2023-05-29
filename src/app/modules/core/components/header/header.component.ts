@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, isDevMode } from '@angular/core';
 import { AuthService, User } from '@auth0/auth0-angular';
 import { Observable } from 'rxjs';
 
@@ -24,7 +24,7 @@ export class HeaderComponent implements OnInit {
   logout() {
     this.authService.logout({
       logoutParams: {
-        returnTo: document.location.origin,
+        returnTo: document.location.origin + (isDevMode() ? '' : '/todo'),
       },
     });
   }
