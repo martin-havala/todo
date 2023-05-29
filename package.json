@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve --ssl true",
     "build": "ng build",
-    "buildGH": "ng build --output-path docs --base-href http://martin-havala.github.io/todo/",
+    "buildGH": "ng build --output-path docs --base-href https://martin-havala.github.io/todo/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
