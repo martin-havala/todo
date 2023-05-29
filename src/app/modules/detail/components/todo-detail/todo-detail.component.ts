@@ -88,13 +88,13 @@ export class TodoDetailComponent implements OnInit {
 
   save() {
     const id = this.route.snapshot.paramMap.get('todoId') as string;
-    if (id) {
+    if (id) { 
       this.todoService
         .updateTodo({
           id,
           todoListId: this.todoListId,
           ...this.formGroup.value,
-        })
+        },true)
         .subscribe();
     } else {
       this.todoService

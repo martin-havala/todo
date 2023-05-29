@@ -18,6 +18,14 @@
     <mat-card-actions>
       <button
         mat-stroked-button
+        routerLink="/"
+        
+      >
+        <mat-icon>chevron_left</mat-icon>
+        Back
+      </button>
+      <button
+        mat-stroked-button
         (click)="save()"
         [disabled]="!formGroup.dirty || !formGroup.valid"
       >
@@ -34,7 +42,7 @@
 
 <mat-card>
   <mat-card-content>
-    <div class="detail__todo" *ngFor="let item of items; trackBy: trackFn">
+    <div class="detail__todo" *ngFor="let item of list?.todos; trackBy: trackFn">
       <app-todo [item]="item"> </app-todo>
       <button
         mat-icon-button
@@ -48,7 +56,7 @@
     </div>
   </mat-card-content>
 
-  <mat-card-actions>
+  <mat-card-actions align="end">
     <button
       class="detail_addBtn"
       mat-mini-fab

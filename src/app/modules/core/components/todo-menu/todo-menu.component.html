@@ -1,9 +1,26 @@
-<button *ngIf="this.email$ | async" mat-mini-fab routerLink="/detail">
+<button *ngIf="this.email$ | async" mat-fab routerLink="/detail">
   <mat-icon>add</mat-icon>
 </button>
+<form>
+  <mat-form-field appearance="outline">
+    <mat-label>Filter</mat-label>
+    <input
+      matInput
+      [formControl]="searchStrCtrl"
+      placeholder="Filter ToDo items"
+    />
+  </mat-form-field>
+
+  <mat-button-toggle-group [formControl]="filterStateCtrl">
+    <mat-button-toggle value="all">all</mat-button-toggle>
+    <mat-button-toggle value="active">active</mat-button-toggle>
+    <mat-button-toggle value="resolved">resolved</mat-button-toggle>
+  </mat-button-toggle-group>
+</form>
 <div class="menu">
   <app-todo-list
     *ngFor="let list of list$ | async"
     [list]="list"
+    [class.menu--inactive]="list.todos.length === 0"
   ></app-todo-list>
 </div>

@@ -19,7 +19,12 @@ import {
 import { environment } from 'src/app/environments/environment';
 import { ToDo } from 'src/app/models/todo';
 import { PopulatedToDoList, ToDoList } from 'src/app/models/todo_list';
-import { todosEntitiesRef, todosStore } from 'src/app/store/store';
+import {
+  insertTodo,
+  todosEntitiesRef,
+  todosStore,
+  updateTodo
+} from 'src/app/store/store';
 
 @Injectable({
   providedIn: 'root',
@@ -115,15 +120,7 @@ export class TodosService {
         todo
       )
       .pipe(
-        tap((item) => {
-          todosStore.update(addEntities(item, { ref: todosEntitiesRef }));
-          todosStore.update(
-            updateEntities(item.todoListId, (entity) => ({
-              ...entity,
-              todos: [...entity.todos, item.id],
-            }))
-          );
-        }),
+        tap((item) => insertTodo(item)),
         tap((item) =>
           this.router.navigateByUrl(
             this.router.createUrlTree(['detail', item.todoListId])
@@ -132,23 +129,20 @@ export class TodosService {
       );
   }
 
-  updateTodo(todo: Partial<ToDo>) {
+  updateTodo(todo: Partial<ToDo>, reroute = false) {
     return this.http
-      .put<ToDoList>(
+      .put<ToDo>(
         `${environment.apiUrl}/todoList/${todo.todoListId}/todos/${todo.id}`,
         todo
       )
       .pipe(
-        tap((res) => {
-          todosStore.update(
-            updateEntities(res.id, res, { ref: todosEntitiesRef })
-          );
-        }),
-        tap((item) =>
-          this.router.navigateByUrl(
-            this.router.createUrlTree(['detail', item.id])
-          )
-        )
+        tap((item) => updateTodo(item)),
+        tap((item) => {
+          reroute &&
+            this.router.navigateByUrl(
+              this.router.createUrlTree(['detail', item.todoListId])
+            );
+        })
       );
   }
 

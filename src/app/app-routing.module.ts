@@ -1,11 +1,5 @@
 import { Injectable, NgModule } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  Router,
-  RouterModule,
-  RouterStateSnapshot,
-  Routes,
-} from '@angular/router';
+import { Router, RouterModule, Routes } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
 import { Observable, map } from 'rxjs';
 import { TodoMenuComponent } from './modules/core/components/todo-menu/todo-menu.component';
@@ -14,10 +8,7 @@ import { TodoMenuComponent } from './modules/core/components/todo-menu/todo-menu
 export class CanActivateRouteGuard implements CanActivateRouteGuard {
   constructor(private router: Router, private authService: AuthService) {}
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): Observable<boolean> {
+  canActivate(): Observable<boolean> {
     return this.authService.isAuthenticated$.pipe(
       map((is) => {
         if (!is) {
@@ -40,6 +31,6 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { useHash: true })],
 })
 export class AppRoutingModule {}

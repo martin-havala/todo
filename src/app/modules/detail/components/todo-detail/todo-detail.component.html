@@ -51,7 +51,7 @@
     </mat-card-content>
     <mat-card-actions>
       <button mat-stroked-button (click)="back()">Back</button>
-      <button mat-stroked-button (click)="save()" [disabled]="!formGroup.valid || !formGroup.dirty">Save</button>
+      <button mat-stroked-button (click)="save()" [disabled]="!formGroup.valid || formGroup.pristine">Save</button>
     </mat-card-actions>
   </mat-card>
 </form>

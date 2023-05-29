@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Host, HostBinding, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { switchMap } from 'rxjs';
 import { ToDo } from 'src/app/models/todo';
@@ -8,12 +8,13 @@ import { TodosService } from 'src/app/services/todos/todos.service';
   selector: 'app-todo',
   templateUrl: './todo.component.html',
   styleUrls: ['./todo.component.sass'],
-  host: {
-    class: 'app-todo',
-  },
 })
 export class TodoComponent implements OnInit {
   @Input() item!: ToDo;
+
+  @HostBinding('class') get cls() {
+    return 'app-todo';
+  }
   resolvedFC!: FormControl<boolean | null>;
 
   constructor(private todoService: TodosService) {}

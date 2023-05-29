@@ -2,17 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
-import { getEntity } from '@ngneat/elf-entities';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { first, forkJoin, map } from 'rxjs';
 import { ToDo } from 'src/app/models/todo';
-import {
-  PopulatedToDoList,
-  ReferencedToDoList,
-  ToDoList,
-} from 'src/app/models/todo_list';
+import { PopulatedToDoList } from 'src/app/models/todo_list';
 import { TodosService } from 'src/app/services/todos/todos.service';
-import { todosEntitiesRef, todosStore } from 'src/app/store/store';
 
 @UntilDestroy()
 @Component({
@@ -21,8 +15,7 @@ import { todosEntitiesRef, todosStore } from 'src/app/store/store';
   styleUrls: ['./todo-list-detail.component.sass'],
 })
 export class TodoListDetailComponent implements OnInit {
-  list!: Partial<ToDoList> | null;
-  items: ToDo[] = [];
+  list!: Partial<PopulatedToDoList> | null;
 
   formGroup!: FormGroup<{
     name: FormControl<string | null>;
@@ -51,48 +44,38 @@ export class TodoListDetailComponent implements OnInit {
     });
   }
   initList() {
-    this.items = [];
     forkJoin({
       list: this.route.data
-        .pipe(map(({ todoList }) => todoList as ReferencedToDoList))
-        .pipe(first(), untilDestroyed(this)),
+        .pipe(map(({ todoList }) => todoList as PopulatedToDoList))
+        .pipe(first()),
       user: this.authService.user$.pipe(first()),
-    }).subscribe(({ list, user }) => {
-      if (list) {
-        this.list = {
-          id: list.id,
-          name: list.name,
-          private: list.private,
-          userEmail: list.userEmail,
-          createdAt: list.createdAt,
-        };
-
-        this.items = list.todos
-          .map(
-            (td) =>
-              todosStore.query(getEntity(td, { ref: todosEntitiesRef })) as ToDo
-          )
-          .filter(Boolean);
-      } else {
-        this.list = {
+    })
+      .pipe(untilDestroyed(this))
+      .subscribe(({ list, user }) => {
+        this.list = list ?? {
+          name: '',
           private: true,
           userEmail: user?.email,
         };
-        this.items = [];
-      }
-      this.formGroup.patchValue(this.list);
-    });
+
+        this.formGroup.patchValue({
+          name: this.list.name,
+          private: this.list.private,
+        });
+      });
   }
 
   save() {
     if (this.formGroup.value && this.formGroup.valid) {
       this.todoService
         .saveUpdateList({
-          ...this.list,
+          createdAt: this.list?.createdAt,
+          id: this.list?.id,
+          userEmail: this.list?.userEmail,
           ...this.formGroup.value,
         } as PopulatedToDoList)
         .subscribe(() => {
-          this.router.navigate(['/']);
+          this.router.navigate(['//']);
         });
     }
   }
@@ -101,7 +84,7 @@ export class TodoListDetailComponent implements OnInit {
     if (this.list?.id) {
       this.todoService
         .deleteList(this.list.id)
-        .subscribe(() => this.router.navigate(['/']));
+        .subscribe(() => this.router.navigate(['//']));
     }
   }
 

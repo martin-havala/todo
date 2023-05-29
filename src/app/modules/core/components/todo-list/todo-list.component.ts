@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { PopulatedToDoList } from 'src/app/models/todo_list';
 
 @Component({
@@ -6,10 +6,6 @@ import { PopulatedToDoList } from 'src/app/models/todo_list';
   templateUrl: './todo-list.component.html',
   styleUrls: ['./todo-list.component.sass'],
 })
-export class TodoListComponent implements OnInit {
+export class TodoListComponent {
   @Input() list!: PopulatedToDoList;
-
-  constructor() {}
-
-  ngOnInit(): void {}
 }
