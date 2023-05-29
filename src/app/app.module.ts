@@ -47,7 +47,7 @@ if (isDevMode()) {
       domain: environment.auth0Domain,
       clientId: environment.auth0ClientId,
       authorizationParams: {
-        redirect_uri: window.location.origin + isDevMode() ? '' : '/todo',
+        redirect_uri: window.location.origin + (isDevMode() ? '' : '/todo'),
       },
       cacheLocation: 'localstorage',
     }),
