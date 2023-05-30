@@ -43,6 +43,7 @@ export class TodoListDetailComponent implements OnInit {
       }),
     });
   }
+
   initList() {
     forkJoin({
       list: this.route.data
@@ -75,7 +76,7 @@ export class TodoListDetailComponent implements OnInit {
           ...this.formGroup.value,
         } as PopulatedToDoList)
         .subscribe(() => {
-          this.router.navigate(['//']);
+          this.router.navigate(['/']);
         });
     }
   }
@@ -89,7 +90,11 @@ export class TodoListDetailComponent implements OnInit {
   }
 
   deleteTodo(todo: ToDo) {
-    this.todoService.deleteTodo(todo).subscribe(() => this.initList());
+    this.todoService.deleteTodo(todo).subscribe(() => {
+      if (this.list) {
+        this.list.todos = this.list?.todos?.filter((t) => t.id !== todo.id);
+      }
+    });
   }
 
   trackFn(i: number) {

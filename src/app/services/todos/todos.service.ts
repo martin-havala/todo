@@ -2,28 +2,27 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@auth0/auth0-angular';
-import {
-  addEntities,
-  deleteEntities,
-  updateEntities,
-} from '@ngneat/elf-entities';
+import { deleteEntities } from '@ngneat/elf-entities';
 import {
   BehaviorSubject,
-  first,
   forkJoin,
   map,
   of,
   switchMap,
   tap,
+  throttleTime,
 } from 'rxjs';
 import { environment } from 'src/app/environments/environment';
 import { ToDo } from 'src/app/models/todo';
 import { PopulatedToDoList, ToDoList } from 'src/app/models/todo_list';
 import {
+  deleteTodo,
   insertTodo,
-  todosEntitiesRef,
+  insertTodoList,
+  populateTodos,
   todosStore,
-  updateTodo
+  updateTodo,
+  updateTodoList,
 } from 'src/app/store/store';
 
 @Injectable({
@@ -59,48 +58,35 @@ export class TodosService {
                     `${environment.apiUrl}/todoList/${listItem.id}/todos`
                   )
                   .pipe(
-                    tap((items) => {
-                      todosStore.update(
-                        addEntities({
-                          ...listItem,
-                          todos: items.map((i) => i.id),
-                        }),
-                        addEntities(items, { ref: todosEntitiesRef })
-                      );
-                    })
+                    map((todos) => ({
+                      listItem,
+                      todos,
+                    }))
                   )
               )
-            )
+            ).pipe(tap((todos) => populateTodos(todos)))
           : of([]);
       }),
-      tap(() => this.initialized$.next(true)),
-      first()
+      tap(() => this.initialized$.next(true))
     );
   }
 
   addList(list: Partial<ToDoList>) {
     return this.http
       .post<ToDoList>(`${environment.apiUrl}/todoList/`, list)
-      .pipe(
-        tap((res) => todosStore.update(addEntities({ ...res, todos: [] })))
-      );
+      .pipe(tap((list) => insertTodoList(list)));
   }
 
   updateList(list: ToDoList) {
-    return (
-      this.http
-        .put<ToDoList>(`${environment.apiUrl}/todoList/${list.id}`, list)
-        //.pipe(switchMap((res) => this.reload().pipe(map((a) => res))));
-        .pipe(tap((res) => todosStore.update(updateEntities(res.id, res))))
-    );
+    return this.http
+      .put<ToDoList>(`${environment.apiUrl}/todoList/${list.id}`, list)
+      .pipe(tap((list) => updateTodoList(list)));
   }
 
   saveUpdateList(list: PopulatedToDoList) {
-    if (list.id) {
-      return this.updateList(list);
-    } else {
-      return this.addList(list);
-    }
+    return (list.id ? this.updateList(list) : this.addList(list)).pipe(
+      tap(() => this.router.navigate(['//']))
+    );
   }
 
   deleteList(listId: string) {
@@ -151,10 +137,6 @@ export class TodosService {
       .delete<ToDo>(
         `${environment.apiUrl}/todoList/${todo.todoListId}/todos/${todo.id}`
       )
-      .pipe(
-        tap((res) => {
-          todosStore.update(deleteEntities(res.id, { ref: todosEntitiesRef }));
-        })
-      );
+      .pipe(map((todo) => deleteTodo(todo)));
   }
 }

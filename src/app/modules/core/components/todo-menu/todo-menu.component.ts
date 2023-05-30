@@ -18,6 +18,7 @@ export class TodoMenuComponent implements OnInit {
   email$!: Observable<string | null>;
   searchStrCtrl!: FormControl<string | null>;
   filterStateCtrl!: FormControl<'active' | 'resolved' | 'all' | null>;
+
   constructor(private authService: AuthService) {}
 
   todoFilter(todos: ToDo[], filterState: 'active' | 'resolved' | 'all' | null) {
@@ -35,6 +36,7 @@ export class TodoMenuComponent implements OnInit {
   ngOnInit(): void {
     this.searchStrCtrl = new FormControl('');
     this.filterStateCtrl = new FormControl('all');
+
     this.list$ = combineLatest({
       list: todoLists$,
       searchStr: this.searchStrCtrl.valueChanges.pipe(startWith('')),
